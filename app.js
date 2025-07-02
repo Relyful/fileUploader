@@ -4,9 +4,11 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("./generated/prisma");
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const pg = require("pg");
+
+const indexRouter = require('./routers/indexRouter');
 
 require("dotenv").config();
 
@@ -80,6 +82,8 @@ passport.deserializeUser(async (id, done) => {
   const user = rows[0];
   done(null, user);
 });
+
+app.use('/', indexRouter);
 
 app.get("/*splat", async (req, res) => {
   res.send("You cannot be here :( .");
