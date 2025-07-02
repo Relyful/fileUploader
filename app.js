@@ -1,18 +1,18 @@
-const express = require('express');
-const path = require('path');
+const express = require("express");
+const path = require("path");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
-const passport = require('passport');
+const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { PrismaClient } = require('@prisma/client');
-const pg = require('pg');
+const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
+const pg = require("pg");
 
-
-require('dotenv').config()
-const pgSession = require('connect-pg-simple')(session);
+require("dotenv").config();
 
 // const prisma = new PrismaClient();      // Prisma uses its own pool internally
-const pool = new pg.Pool({           // Separate pool for connect‑pg‑simple
+const pool = new pg.Pool({
+  // Separate pool for connect‑pg‑simple
   connectionString: process.env.DATABASE_URL,
 });
 
@@ -22,20 +22,27 @@ const app = express();
 //setup for login sessions
 app.use(
   session({
-    store: new pgSession({
-      pool: pool,                 // Connection pool
-      createTableIfMissing: true  
-    }),
+    cookie: {
+     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    },
     secret: process.env.SECRET,
-    resave: false,
-    cookie: { maxAge: 10 * 24 * 60 * 60 * 1000 }, // 2 days
+    resave: true,
     saveUninitialized: true,
-}));
+    store: new PrismaSessionStore(
+      new PrismaClient(),
+      {
+        checkPeriod: 2 * 60 * 1000,  //ms
+        dbRecordIdIsSessionId: true,
+        dbRecordIdFunction: undefined,
+      }
+    )
+  }),
+);
 
 //Set-up url request body parsing
 app.use(express.urlencoded({ extended: false }));
 //Set-up EJS
-app.set('views', path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 //Set-up Public files
 const assetsPath = path.join(__dirname, "public");
@@ -46,38 +53,40 @@ app.use(passport.session());
 //Set-up passport strategy
 passport.use(
   new LocalStrategy(async (username, password, done) => {
-      const { rows } = await pool.query(
-        "SELECT * FROM users WHERE username = $1",
-        [username]
-      );
-      const user = rows[0];
-      if (!user) {
-        return done(null, false, { message: "Incorrect username" });
-      }
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        // passwords do not match!
-        return done(null, false, { message: "Incorrect password" });
-      }
-      return done(null, user);
-  })
+    const { rows } = await pool.query(
+      "SELECT * FROM users WHERE username = $1",
+      [username],
+    );
+    const user = rows[0];
+    if (!user) {
+      return done(null, false, { message: "Incorrect username" });
+    }
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      // passwords do not match!
+      return done(null, false, { message: "Incorrect password" });
+    }
+    return done(null, user);
+  }),
 );
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async (id, done) => { //try to remove try catch block for new express
-    const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
-    const user = rows[0];
-    done(null, user);
+passport.deserializeUser(async (id, done) => {
+  //try to remove try catch block for new express
+  const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  const user = rows[0];
+  done(null, user);
 });
 
-app.get('/*splat', async (req, res) => {
-  res.send('You cannot be here :( .')
-})
+app.get("/*splat", async (req, res) => {
+  res.send("You cannot be here :( .");
+});
 
 //Error middleware
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send(err.message);
