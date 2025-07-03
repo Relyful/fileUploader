@@ -6,17 +6,19 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { PrismaClient } = require("./generated/prisma");
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
-const pg = require("pg");
+// TODO: REMOVE AFTER MAKING SURE PRISMA WAY WORKS
+// const pg = require("pg");
 
 const indexRouter = require('./routers/indexRouter');
 
 require("dotenv").config();
 
-// const prisma = new PrismaClient();      // Prisma uses its own pool internally
-const pool = new pg.Pool({
-  // Separate pool for connect‑pg‑simple
-  connectionString: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient();      // Prisma uses its own pool internally
+// TODO: REMOVE AFTER MAKING SURE PRISMA WAY WORKS
+// const pool = new pg.Pool({
+//   // Separate pool for connect‑pg‑simple
+//   connectionString: process.env.DATABASE_URL,
+// });
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -55,11 +57,17 @@ app.use(passport.session());
 //Set-up passport strategy
 passport.use(
   new LocalStrategy(async (username, password, done) => {
-    const { rows } = await pool.query(
-      "SELECT * FROM users WHERE username = $1",
-      [username],
-    );
-    const user = rows[0];
+    // TODO: REMOVE AFTER MAKING SURE PRISMA WAY WORKS
+    // const { rows } = await pool.query(
+    //   "SELECT * FROM users WHERE username = $1",
+    //   [username],
+    // );
+    // const user = rows[0];
+    const user = prisma.user.findUnique({
+      where: {
+        username: username
+      }
+    })
     if (!user) {
       return done(null, false, { message: "Incorrect username" });
     }
@@ -77,9 +85,15 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
+  // TODO: REMOVE AFTER MAKING SURE PRISMA WAY WORKS
   //try to remove try catch block for new express
-  const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
-  const user = rows[0];
+  // const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  // const user = rows[0];
+  const user = prisma.user.findUnique({
+    where: {
+      id: id
+    }
+  })
   done(null, user);
 });
 
