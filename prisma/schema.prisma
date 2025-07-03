@@ -20,3 +20,15 @@ model Session {
   data      String
   expiresAt DateTime
 }
+
+model User {
+  id  Int @id @default(autoincrement())
+  username String @unique
+  password String 
+  role Role @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
