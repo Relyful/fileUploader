@@ -1,6 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const { PrismaClient } = require("../generated/prisma");
+const passport = require("passport");
 
 const prisma = new PrismaClient(); // Prisma uses its own pool internally
 
@@ -69,3 +70,19 @@ exports.postRegister = [
     }
   },
 ];
+
+exports.getLogin = async (req, res) => {
+  res.render('login');
+}
+
+exports.postLogin = passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+})
+
+exports.getLogout = async (req, res, next) => {
+  req.logout((err) => {
+    if (err) {return next(err);}
+    res.redirect('/');
+  })
+}
