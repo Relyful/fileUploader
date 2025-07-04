@@ -63,7 +63,7 @@ passport.use(
     //   [username],
     // );
     // const user = rows[0];
-    const user = prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         username: username
       }
@@ -89,7 +89,7 @@ passport.deserializeUser(async (id, done) => {
   //try to remove try catch block for new express
   // const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
   // const user = rows[0];
-  const user = prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: id
     }
