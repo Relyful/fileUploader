@@ -6,10 +6,13 @@
   <title>Relyful</title>
 </head>
 <body>
-  <h1>Hello World</h1>
+  <h1>Hello World <% if (locals.user) { %>
+    <%= locals.user.username %>
+  <% } %></h1>
   <div class="links">
     <a href="/register">Register</a>
     <a href="/login">Log In</a>
+    <a href="/logout">Logout</a>
   </div>
 </body>
 </html>

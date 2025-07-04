@@ -26,7 +26,9 @@ const registerValidation = [
 ];
 
 exports.getIndex = async (req, res) => {
-  res.render("index");
+  res.render("index", {
+    user: req.user
+  });
 };
 
 exports.getRegister = async (req, res) => {
