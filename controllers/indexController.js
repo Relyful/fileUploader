@@ -92,3 +92,8 @@ exports.getLogout = async (req, res, next) => {
 exports.getUploadForm = (req, res) => {
   res.render('uploadForm');
 }
+
+exports.postUploadForm = (req, res) => {
+  console.log(req.file);
+  res.redirect('/');
+}

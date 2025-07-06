@@ -29,12 +29,12 @@
     "globals": "^16.3.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.16.3",
     "prettier": "3.6.2",
     "prisma": "^6.11.0"
   },
   "dependencies": {
     "@prisma/client": "^6.11.0",
-    "@quixo3/prisma-session-store": "^3.1.13"
+    "@quixo3/prisma-session-store": "^3.1.13",
+    "multer": "^2.0.1"
   }
 }
