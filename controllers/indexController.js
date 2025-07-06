@@ -88,3 +88,7 @@ exports.getLogout = async (req, res, next) => {
     res.redirect('/');
   })
 }
+
+exports.getUploadForm = (req, res) => {
+  res.render('uploadForm');
+}
