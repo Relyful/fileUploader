@@ -102,11 +102,13 @@ exports.getUploadForm = async (req, res) => {
 }
 
 exports.postUploadForm = async (req, res) => {
-  console.log(req.file);
+  console.log(req.body);
+  const data = req.body;
   await prisma.file.create({
     data: {
       fileName: req.file.filename,  
-      userId: req.user.id    
+      userId: req.user.id,
+      folderId: parseInt(data.folders)
     }
   })
   res.redirect('/');
