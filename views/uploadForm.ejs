@@ -11,10 +11,10 @@
     <input type="file" name="myfile" id="myfile">
     <label for="folders">Upload to folder: </label>
     <select name="folders" id="folders">
-      <option value="undefined" selected disabled hidden>Target Folder</option>
+      <option value="undefined" selected>No Folder</option>
       <% if (locals.folders) { %>
         <% locals.folders.forEach(folder => { %>
-         <option value=<%= folder %>><%= folder %></option>
+         <option value=<%= folder.id %>><%= folder.folderName %></option>
         <% }) %>
       <% } %>
     </select>

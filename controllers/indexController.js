@@ -89,8 +89,16 @@ exports.getLogout = async (req, res, next) => {
   })
 }
 
-exports.getUploadForm = (req, res) => {
-  res.render('uploadForm');
+exports.getUploadForm = async (req, res) => {
+  const folders = await prisma.folder.findMany({
+    where: {
+      userId: req.user.id
+    }
+  });
+  console.log(folders)
+  res.render('uploadForm', {
+    folders
+});
 }
 
 exports.postUploadForm = async (req, res) => {
@@ -104,7 +112,7 @@ exports.postUploadForm = async (req, res) => {
   res.redirect('/');
 }
 
-exports.getFolderForm = (req, res) => {
+exports.getFolderForm = (req, res) => {  
   res.render('folderForm');
 }
 
