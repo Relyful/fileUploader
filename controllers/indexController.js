@@ -103,3 +103,18 @@ exports.postUploadForm = async (req, res) => {
   })
   res.redirect('/');
 }
+
+exports.getFolderForm = (req, res) => {
+  res.render('folderForm');
+}
+
+exports.postFolderForm = async (req, res) => {
+  const data = req.body;
+  await prisma.folder.create({
+    data: {
+      folderName: data.folderName,
+      userId: req.user.id
+    }
+  })
+  res.redirect('/');
+}
