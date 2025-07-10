@@ -27,5 +27,6 @@ indexRouter.get('/upload', authMiddleware, indexController.getUploadForm);
 indexRouter.post('/upload', authMiddleware, upload.single('myfile'), indexController.postUploadForm);
 indexRouter.get('/createFolder', authMiddleware, indexController.getFolderForm);
 indexRouter.post('/createFolder', authMiddleware, indexController.postFolderForm);
+indexRouter.get('/viewFiles', indexController.getFileView);
 
 module.exports = indexRouter;

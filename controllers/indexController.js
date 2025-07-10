@@ -128,3 +128,21 @@ exports.postFolderForm = async (req, res) => {
   })
   res.redirect('/');
 }
+
+exports.getFileView = async (req, res) => {
+  const folders = await prisma.folder.findMany({
+    where: {
+      userId: req.user.id
+    }
+  });
+  const files = await prisma.file.findMany({
+    where: {
+      userId: req.user.id,
+      folderId: null
+    }
+  })
+  res.render('fileView', {
+    files,
+    folders
+  })
+}

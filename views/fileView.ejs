@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View files</title>
+</head>
+<body>
+  <h3>My files</h3>
+  <ul>
+    <% if (locals.files) { %>
+     <% files.forEach(file => { %>
+      <li>
+        <div class="name"><%= file.fileName %> </div>
+      </li>
+     <% }) %>
+    <% } %>
+    </ul>
+  <% if (locals.folders) { %>
+    <h3>My folders</h3>
+    <ul>
+     <% folders.forEach(folder => { %>
+      <li>
+        <div class="name"><%= folder.folderName %> </div>
+      </li>
+     <% }) %>
+  <% } %>
+  </ul>
+</body>
+</html>
