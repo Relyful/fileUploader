@@ -12,6 +12,9 @@
      <% files.forEach(file => { %>
       <li>
         <div class="name"><%= file.fileName %> </div>
+        <div class="buttons">
+          <a href="/deleteFile/<%= file.id %>"><button type="button">Delete</button></a>
+        </div>
       </li>
      <% }) %>
     <% } %>
@@ -21,7 +24,12 @@
     <ul>
      <% folders.forEach(folder => { %>
       <li>
-        <div class="name"><%= folder.folderName %> </div>
+        <a href="/viewFiles/<%= userId %>/<%= folder.id %>">
+          <div class="name"><%= folder.folderName %> </div>
+        </a>
+        <div class="buttons">
+          <a href="/deleteFolder/<%= folder.id %>"><button type="button">Delete</button></a>
+        </div>
       </li>
      <% }) %>
   <% } %>

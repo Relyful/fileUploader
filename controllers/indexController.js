@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const { PrismaClient } = require("../generated/prisma");
 const passport = require("passport");
+const { userCheck } = require("./controllerHelpers");
 
 const prisma = new PrismaClient(); // Prisma uses its own pool internally
 
@@ -143,6 +144,46 @@ exports.getFileView = async (req, res) => {
   })
   res.render('fileView', {
     files,
-    folders
+    folders,
+    userId: req.user.id
   })
+}
+
+exports.getFolderView = async (req, res) => {
+  if (userCheck(req)) {
+    res.status(401).send('No access');
+    return;
+  }
+  const params = {...req.params};
+  const folderOwnerId = await prisma.folder.findFirst({
+    where: {
+      id: parseInt(params.folderId)
+    }
+  });
+  if (parseInt(folderOwnerId.userId) !== req.user.id) {
+    res.status(401).send('No access');
+    return;
+  }
+  const files = await prisma.file.findMany({
+    where: {
+      folderId: parseInt(params.folderId)
+    }
+  })  
+  res.render('fileView', {
+    files
+  })
+}
+
+exports.deleteFile = async (req, res) => {
+  // if (userCheck(req)) {
+  //   res.status(401).send('No access');
+  //   return;
+  // }
+  //TODO: ADD FILE OWNERSHIP CHECK
+  await prisma.file.delete({
+    where: {
+      id: req.params.fileId
+    }
+  })
+  res.redirect('/viewFiles');
 }
