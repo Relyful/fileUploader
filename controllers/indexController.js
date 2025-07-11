@@ -64,7 +64,7 @@ exports.postRegister = [
       res.redirect("/login");
     } catch (err) {
       if (err.code && err.code === "23505") {
-        return res.status(400).render("registerForm", {
+        return res.status(400).render("register", {
           errors: [{ msg: "Username already exists." }],
           loggedIn: req.isAuthenticated(),
           user: req.user,
@@ -219,3 +219,36 @@ exports.deleteFolder = async (req, res) => {
   });
   res.redirect('/viewFiles');
 }
+
+exports.getRenameFolder = async (req, res) => {
+  const { folderId } = req.params;
+  const { folderName, id } = await prisma.folder.findFirst({
+    where: {
+      id: parseInt(folderId),
+      userId: req.user.id
+    }
+  });
+  res.render('renameFolder', {
+    originalName: folderName,
+    folderId: id
+  })
+}
+
+exports.postRenameFolder = async (req, res) => {
+  const { folderId } = req.params;
+  const data = req.body;
+  const folder = await prisma.folder.update({
+    where: {
+      id: parseInt(folderId),
+      userId: req.user.id
+    },
+    data: {
+      folderName: data.folderName
+    }
+  })
+  if (!folder) {
+    res.send(':(');
+    return;
+  }
+  res.redirect('/viewFiles');
+};

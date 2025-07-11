@@ -31,5 +31,7 @@ indexRouter.get('/viewFiles', indexController.getFileView);
 indexRouter.get('/viewFiles/:folderId', indexController.getFolderView);
 indexRouter.get('/deleteFile/:fileId', indexController.deleteFile);
 indexRouter.get('/deleteFolder/:folderId', indexController.deleteFolder);
+indexRouter.get('/renameFolder/:folderId', indexController.getRenameFolder);
+indexRouter.post('/renameFolder/:folderId', indexController.postRenameFolder);
 
 module.exports = indexRouter;

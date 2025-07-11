@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rename folder</title>
+</head>
+<body>
+  <h3>Rename folder</h3>
+  <form action="/renameFolder/<%= folderId %>" method="post">
+    <label for="folderName">Folder Name: </label>
+    <input type="text" name="folderName" id="folderName" value=<%= originalName %>>
+    <button type="submit">Rename</button>
+  </form>
+</body>
+</html>
