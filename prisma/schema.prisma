@@ -33,7 +33,7 @@ model User {
 model File {
   id Int @id @default(autoincrement())
   fileName String @unique
-  folder Folder? @relation(fields: [folderId], references: [id])
+  folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId Int?
   user User @relation(fields: [userId], references: [id])
   userId Int
