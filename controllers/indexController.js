@@ -2,7 +2,8 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const { PrismaClient } = require("../generated/prisma");
 const passport = require("passport");
-const { userCheck } = require("./controllerHelpers");
+const fs = require('fs');
+const path = require('path');
 
 const prisma = new PrismaClient(); // Prisma uses its own pool internally
 
@@ -144,23 +145,21 @@ exports.getFileView = async (req, res) => {
   })
   res.render('fileView', {
     files,
-    folders,
-    userId: req.user.id
+    folders
   })
 }
 
 exports.getFolderView = async (req, res) => {
-  if (userCheck(req)) {
-    res.status(401).send('No access');
-    return;
-  }
   const params = {...req.params};
-  const folderOwnerId = await prisma.folder.findFirst({
+  const { userId: folderOwnerId } = await prisma.folder.findFirst({
     where: {
       id: parseInt(params.folderId)
+    },
+    select: {
+      userId: true
     }
   });
-  if (parseInt(folderOwnerId.userId) !== req.user.id) {
+  if (parseInt(folderOwnerId) !== req.user.id) {
     res.status(401).send('No access');
     return;
   }
@@ -175,15 +174,19 @@ exports.getFolderView = async (req, res) => {
 }
 
 exports.deleteFile = async (req, res) => {
-  // if (userCheck(req)) {
-  //   res.status(401).send('No access');
-  //   return;
-  // }
   //TODO: ADD FILE OWNERSHIP CHECK
-  await prisma.file.delete({
+  const deleted = await prisma.file.delete({
     where: {
-      id: req.params.fileId
+      id: parseInt(req.params.fileId)
     }
-  })
+  });
+  const deletePath = path.join(__dirname, '..', 'uploads', deleted.fileName);
+  fs.unlink(deletePath, (err) => {
+    if (err) {
+      console.error(`Error removing file: ${err}`);
+      return;
+    }
+  });
+
   res.redirect('/viewFiles');
 }
