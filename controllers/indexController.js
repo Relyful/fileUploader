@@ -187,6 +187,35 @@ exports.deleteFile = async (req, res) => {
       return;
     }
   });
+  res.redirect('/viewFiles');
+}
 
+exports.deleteFolder = async (req, res) => {
+  const folderToDeleteId = parseInt(req.params.folderId);
+  const fileNamestoDelete = await prisma.file.findMany({
+    where: {
+      folderId: folderToDeleteId
+    },
+    select: {
+      fileName: true
+    }
+  });
+
+  await prisma.folder.delete({
+    where: {
+      id: folderToDeleteId,
+      userId: req.user.id
+    }
+  });
+
+  fileNamestoDelete.forEach((file) => {
+    const pathToDelete = path.join(__dirname, '..', 'uploads', file.fileName);
+    fs.unlink(pathToDelete, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    })
+  });
   res.redirect('/viewFiles');
 }
