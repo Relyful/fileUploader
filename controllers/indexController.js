@@ -113,7 +113,7 @@ exports.postUploadForm = async (req, res) => {
       folderId: parseInt(data.folders)
     }
   })
-  res.redirect('/');
+  res.redirect('/viewFiles');
 }
 
 exports.getFolderForm = (req, res) => {  
@@ -174,10 +174,10 @@ exports.getFolderView = async (req, res) => {
 }
 
 exports.deleteFile = async (req, res) => {
-  //TODO: ADD FILE OWNERSHIP CHECK
   const deleted = await prisma.file.delete({
     where: {
-      id: parseInt(req.params.fileId)
+      id: parseInt(req.params.fileId),
+      userId: req.user.id
     }
   });
   const deletePath = path.join(__dirname, '..', 'uploads', deleted.fileName);
