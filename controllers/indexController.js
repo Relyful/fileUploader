@@ -268,3 +268,20 @@ exports.postRenameFolder = async (req, res) => {
   }
   res.redirect('/viewFiles');
 };
+
+exports.getDownloadFile = async (req, res) => {
+  const { fileId } = req.params;
+  //User Check 
+  const file = await prisma.file.findFirst({
+    where: {
+      userId: req.user.id,
+      id: parseInt(fileId)
+    }
+  });
+  if (!file) {
+    return res.status(401).send("No access");
+  }
+  const filePath = path.join(__dirname, '..', 'uploads', file.fileName);
+  console.log(filePath);
+  res.download(filePath, file.fileName);  
+}

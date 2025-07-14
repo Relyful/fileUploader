@@ -33,5 +33,6 @@ indexRouter.get('/deleteFile/:fileId', indexController.deleteFile);
 indexRouter.get('/deleteFolder/:folderId', indexController.deleteFolder);
 indexRouter.get('/renameFolder/:folderId', indexController.getRenameFolder);
 indexRouter.post('/renameFolder/:folderId', indexController.postRenameFolder);
+indexRouter.get('/viewFiles/download/:fileId', indexController.getDownloadFile);
 
 module.exports = indexRouter;

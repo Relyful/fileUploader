@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
   <title>View files</title>
 </head>
 <body>
   <h3>My files</h3>
-  <ul>
+  <ul class="fileList">
     <% if (locals.files) { %>
      <% files.forEach(file => { %>
+      <% file.size = Math.round((file.size / 100000) * 100) / 100 //Conver to MB%>
       <li>
         <div class="name"><%= file.fileName %> </div>
+        <div class="info">
+          <div class="fileSize"><%= file.size %>MB</div>
+          <div class="createdAt"><%= file.createdAt %></div>
+        </div>
         <div class="buttons">
           <a href="/deleteFile/<%= file.id %>"><button type="button">Delete</button></a>
+          <a href="/viewFiles/download/<%= file.id %>"><button type="button">Download</button></a>
         </div>
       </li>
      <% }) %>

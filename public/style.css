@@ -1,0 +1,9 @@
+.fileList li {
+  display: flex;
+  gap: 10px;
+}
+
+.info {
+  display: flex;
+  gap: 10px;
+}
