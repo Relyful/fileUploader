@@ -33,6 +33,8 @@ model User {
 model File {
   id Int @id @default(autoincrement())
   fileName String @unique
+  size Int @default(0)
+  createdAt DateTime @default(now())
   folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId Int?
   user User @relation(fields: [userId], references: [id])
