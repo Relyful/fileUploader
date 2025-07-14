@@ -222,12 +222,16 @@ exports.deleteFolder = async (req, res) => {
 
 exports.getRenameFolder = async (req, res) => {
   const { folderId } = req.params;
-  const { folderName, id } = await prisma.folder.findFirst({
+  const folder = await prisma.folder.findFirst({
     where: {
       id: parseInt(folderId),
       userId: req.user.id
     }
   });
+  if (!folder) {
+    return res.status(404).send("Folder not found.");
+  }
+  const { folderName, id } = folder;
   res.render('renameFolder', {
     originalName: folderName,
     folderId: id
@@ -237,6 +241,7 @@ exports.getRenameFolder = async (req, res) => {
 exports.postRenameFolder = async (req, res) => {
   const { folderId } = req.params;
   const data = req.body;
+  //add ownership check and delete userid from where below cause rpsiam ignores it 
   const folder = await prisma.folder.update({
     where: {
       id: parseInt(folderId),
