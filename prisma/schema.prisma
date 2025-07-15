@@ -35,6 +35,7 @@ model File {
   fileName String @unique
   size Int @default(0)
   createdAt DateTime @default(now())
+  fileUrl String
   folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId Int?
   user User @relation(fields: [userId], references: [id])
