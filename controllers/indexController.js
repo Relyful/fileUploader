@@ -4,6 +4,7 @@ const { PrismaClient } = require("../generated/prisma");
 const passport = require("passport");
 const fs = require('fs');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
 
 const prisma = new PrismaClient(); // Prisma uses its own pool internally
 
@@ -105,16 +106,37 @@ exports.getUploadForm = async (req, res) => {
 
 exports.postUploadForm = async (req, res) => {
   console.log(req.body);
-  const data = req.body;
   console.log(req.file);
-  await prisma.file.create({
-    data: {
-      fileName: req.file.filename,
-      size: req.file.size,  
-      userId: req.user.id,
-      folderId: parseInt(data.folders)
+  const data = req.body;
+  const filePath = path.join(__dirname, '..', req.file.path);
+  try {
+    const result = await cloudinary.uploader.upload(filePath, {
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true
+    });
+    console.log(result);
+
+    await prisma.file.create({
+      data: {
+        fileName: req.file.filename,
+        size: req.file.size,  
+        userId: req.user.id,
+        folderId: parseInt(data.folders),
+        fileUrl: result.secure_url
+      }
+  });
+  //delete after upload
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error(`Error removing file: ${err}`);
+      return;
     }
   });
+  } catch (error) {
+    console.error(error)
+  }  
+  
   res.redirect('/viewFiles');
 }
 
