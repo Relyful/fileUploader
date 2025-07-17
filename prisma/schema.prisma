@@ -33,6 +33,7 @@ model User {
 model File {
   id Int @id @default(autoincrement())
   fileName String @unique
+  userFileName String 
   size Int @default(0)
   createdAt DateTime @default(now())
   fileUrl String
