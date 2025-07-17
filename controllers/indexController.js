@@ -140,7 +140,10 @@ exports.postUploadForm = [
           folderId: parseInt(data.folders),
           fileUrl: result.secure_url,
         },
-      });
+      });      
+    } catch (error) {
+      console.error(error);
+    } finally {
       //Delete after upload
       fs.unlink(filePath, (err) => {
         if (err) {
@@ -148,8 +151,6 @@ exports.postUploadForm = [
           return;
         }
       });
-    } catch (error) {
-      console.error(error);
     }
     res.redirect("/viewFiles");
   },
