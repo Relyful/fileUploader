@@ -205,13 +205,6 @@ exports.deleteFile = async (req, res) => {
   });
   const cloudDelete = await cloudinary.api.delete_resources([deleted.fileName.split('.')[0]]); //split to remove file extension
   console.log(cloudDelete);
-  // const deletePath = path.join(__dirname, '..', 'uploads', deleted.fileName);
-  // fs.unlink(deletePath, (err) => {
-  //   if (err) {
-  //     console.error(`Error removing file: ${err}`);
-  //     return;
-  //   }
-  // });
   res.redirect('/viewFiles');
 }
 
@@ -233,14 +226,9 @@ exports.deleteFolder = async (req, res) => {
     }
   });
 
-  fileNamestoDelete.forEach((file) => {
-    const pathToDelete = path.join(__dirname, '..', 'uploads', file.fileName);
-    fs.unlink(pathToDelete, (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-    })
+  fileNamestoDelete.forEach(async (file) => {
+    const cloudDelete = await cloudinary.api.delete_resources([file.fileName.split('.')[0]]); //split to remove file extension
+    console.log(cloudDelete);
   });
   res.redirect('/viewFiles');
 }
