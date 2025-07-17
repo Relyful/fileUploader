@@ -12,15 +12,16 @@
     <% if (locals.files) { %>
      <% files.forEach(file => { %>
       <% file.size = Math.round((file.size / 100000) * 100) / 100 //Conver to MB%>
+      <% file.createdAt = new Date(file.createdAt).toDateString() %>
       <li>
-        <div class="name"><%= file.fileName %> </div>
+        <div class="name"><%= file.userFileName %> </div>
         <div class="info">
           <div class="fileSize"><%= file.size %>MB</div>
           <div class="createdAt"><%= file.createdAt %></div>
         </div>
         <div class="buttons">
           <a href="/deleteFile/<%= file.id %>"><button type="button">Delete</button></a>
-          <a href=<%= file.fileUrl %> download><button type="button">Download</button></a>
+          <a href=<%= file.fileUrl %> download target="_blank" ><button type="button">Download</button></a>
         </div>
       </li>
      <% }) %>
