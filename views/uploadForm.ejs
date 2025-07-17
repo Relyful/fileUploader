@@ -9,6 +9,8 @@
   <p>Select and upload your file</p>
   <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="myfile" id="myfile">
+    <label for="newFileName">File name: </label>
+    <input type="text" name="newFileName" id="newFileName">
     <label for="folders">Upload to folder: </label>
     <select name="folders" id="folders">
       <option value="undefined" selected>No Folder</option>

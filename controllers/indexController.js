@@ -105,10 +105,11 @@ exports.getUploadForm = async (req, res) => {
 }
 
 exports.postUploadForm = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   console.log(req.file);
   const data = req.body;
   const filePath = path.join(__dirname, '..', req.file.path);
+  const userFileName = data.newFileName + path.extname(req.file.originalname);
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       use_filename: true,
@@ -121,6 +122,7 @@ exports.postUploadForm = async (req, res) => {
       data: {
         fileName: req.file.filename,
         size: req.file.size,  
+        userFileName,
         userId: req.user.id,
         folderId: parseInt(data.folders),
         fileUrl: result.secure_url
