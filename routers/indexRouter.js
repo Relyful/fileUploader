@@ -27,12 +27,11 @@ indexRouter.get('/upload', authMiddleware, indexController.getUploadForm);
 indexRouter.post('/upload', authMiddleware, upload.single('myfile'), indexController.postUploadForm);
 indexRouter.get('/createFolder', authMiddleware, indexController.getFolderForm);
 indexRouter.post('/createFolder', authMiddleware, indexController.postFolderForm);
-indexRouter.get('/viewFiles', indexController.getFileView);
-indexRouter.get('/viewFiles/:folderId', indexController.getFolderView);
-indexRouter.get('/deleteFile/:fileId', indexController.deleteFile);
-indexRouter.get('/deleteFolder/:folderId', indexController.deleteFolder);
-indexRouter.get('/renameFolder/:folderId', indexController.getRenameFolder);
-indexRouter.post('/renameFolder/:folderId', indexController.postRenameFolder);
-indexRouter.get('/viewFiles/download/:fileId', indexController.getDownloadFile);
+indexRouter.get('/viewFiles', authMiddleware, indexController.getFileView);
+indexRouter.get('/viewFiles/:folderId', authMiddleware, indexController.getFolderView);
+indexRouter.get('/deleteFile/:fileId', authMiddleware, indexController.deleteFile);
+indexRouter.get('/deleteFolder/:folderId', authMiddleware, indexController.deleteFolder);
+indexRouter.get('/renameFolder/:folderId', authMiddleware, indexController.getRenameFolder);
+indexRouter.post('/renameFolder/:folderId', authMiddleware, indexController.postRenameFolder);
 
 module.exports = indexRouter;
