@@ -5,6 +5,9 @@ const passport = require("passport");
 const fs = require("fs");
 const path = require("path");
 const { prismaErrorHandler } = require("./helpers");
+const {
+  PrismaClientKnownRequestError,
+} = require("@prisma/client/runtime/library");
 const cloudinary = require("cloudinary").v2;
 
 const prisma = new PrismaClient(); // Prisma uses its own pool internally
@@ -69,11 +72,12 @@ exports.postRegister = [
       console.log(result);
       res.redirect("/login");
     } catch (err) {
+      console.error(err);
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
         const errMessage = prismaErrorHandler(err);
-        return res.render('errPage', {
-          errMessage
-        })
+        return res.render("errPage", {
+          errMessage,
+        });
       }
       return next(err);
     }
@@ -99,20 +103,30 @@ exports.getLogout = async (req, res, next) => {
 };
 
 exports.getUploadForm = async (req, res) => {
-  const folders = await prisma.folder.findMany({
-    where: {
-      userId: req.user.id,
-    },
-  });
-  console.log(folders);
-  res.render("uploadForm", {
-    folders,
-  });
+  try {
+    const folders = await prisma.folder.findMany({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    console.log(folders);
+    res.render("uploadForm", {
+      folders,
+    });
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
+  }
 };
 
 exports.postUploadForm = [
   uploadValidation,
-  async (req, res) => {
+  async (req, res, next) => {
     console.log(req.body);
     console.log(req.file);
     const data = req.body;
@@ -143,6 +157,7 @@ exports.postUploadForm = [
       });
     } catch (error) {
       console.error(error);
+      return next(error);
     } finally {
       //Delete after upload
       fs.unlink(filePath, (err) => {
@@ -161,142 +176,212 @@ exports.getFolderForm = (req, res) => {
 };
 
 exports.postFolderForm = async (req, res) => {
-  const data = req.body;
-  await prisma.folder.create({
-    data: {
-      folderName: data.folderName,
-      userId: req.user.id,
-    },
-  });
-  res.redirect("/");
+  try {
+    const data = req.body;
+    await prisma.folder.create({
+      data: {
+        folderName: data.folderName,
+        userId: req.user.id,
+      },
+    });
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
+  }
 };
 
 exports.getFileView = async (req, res) => {
-  const folders = await prisma.folder.findMany({
-    where: {
-      userId: req.user.id,
-    },
-  });
-  const files = await prisma.file.findMany({
-    where: {
-      userId: req.user.id,
-      folderId: null,
-    },
-  });
-  res.render("fileView", {
-    files,
-    folders,
-  });
+  try {
+    const folders = await prisma.folder.findMany({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    const files = await prisma.file.findMany({
+      where: {
+        userId: req.user.id,
+        folderId: null,
+      },
+    });
+    res.render("fileView", {
+      files,
+      folders,
+    });
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
+  }
 };
 
 exports.getFolderView = async (req, res) => {
-  const params = { ...req.params };
-  const { userId: folderOwnerId } = await prisma.folder.findFirst({
-    where: {
-      id: parseInt(params.folderId),
-    },
-    select: {
-      userId: true,
-    },
-  });
-  if (parseInt(folderOwnerId) !== req.user.id) {
-    res.status(401).send("No access");
-    return;
+  try {
+    const params = { ...req.params };
+    const { userId: folderOwnerId } = await prisma.folder.findFirst({
+      where: {
+        id: parseInt(params.folderId),
+      },
+      select: {
+        userId: true,
+      },
+    });
+    if (parseInt(folderOwnerId) !== req.user.id) {
+      res.status(401).send("No access");
+      return;
+    }
+    const files = await prisma.file.findMany({
+      where: {
+        folderId: parseInt(params.folderId),
+      },
+    });
+    res.render("fileView", {
+      files,
+    });
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
   }
-  const files = await prisma.file.findMany({
-    where: {
-      folderId: parseInt(params.folderId),
-    },
-  });
-  res.render("fileView", {
-    files,
-  });
 };
 
 exports.deleteFile = async (req, res) => {
-  const deleted = await prisma.file.delete({
-    where: {
-      id: parseInt(req.params.fileId),
-      userId: req.user.id,
-    },
-  });
-  const cloudDelete = await cloudinary.api.delete_resources([
-    deleted.fileName.split(".")[0],
-  ]); //split to remove file extension
-  console.log(cloudDelete);
-  res.redirect("/viewFiles");
+  try {
+    const deleted = await prisma.file.delete({
+      where: {
+        id: parseInt(req.params.fileId),
+        userId: req.user.id,
+      },
+    });
+    const cloudDelete = await cloudinary.api.delete_resources([
+      deleted.fileName.split(".")[0],
+    ]); //split to remove file extension
+    console.log(cloudDelete);
+    res.redirect("/viewFiles");
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
+  }
 };
 
 exports.deleteFolder = async (req, res) => {
-  const folderToDeleteId = parseInt(req.params.folderId);
-  const fileNamestoDelete = await prisma.file.findMany({
-    where: {
-      folderId: folderToDeleteId,
-    },
-    select: {
-      fileName: true,
-    },
-  });
+  try {
+    const folderToDeleteId = parseInt(req.params.folderId);
+    const fileNamestoDelete = await prisma.file.findMany({
+      where: {
+        folderId: folderToDeleteId,
+      },
+      select: {
+        fileName: true,
+      },
+    });
 
-  await prisma.folder.delete({
-    where: {
-      id: folderToDeleteId,
-      userId: req.user.id,
-    },
-  });
+    await prisma.folder.delete({
+      where: {
+        id: folderToDeleteId,
+        userId: req.user.id,
+      },
+    });
 
-  fileNamestoDelete.forEach(async (file) => {
-    const cloudDelete = await cloudinary.api.delete_resources([
-      file.fileName.split(".")[0],
-    ]); //split to remove file extension
-    console.log(cloudDelete);
-  });
-  res.redirect("/viewFiles");
+    fileNamestoDelete.forEach(async (file) => {
+      const cloudDelete = await cloudinary.api.delete_resources([
+        file.fileName.split(".")[0],
+      ]); //split to remove file extension
+      console.log(cloudDelete);
+    });
+    res.redirect("/viewFiles");
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
+  }
 };
 
 exports.getRenameFolder = async (req, res) => {
-  const { folderId } = req.params;
-  const folder = await prisma.folder.findFirst({
-    where: {
-      id: parseInt(folderId),
-      userId: req.user.id,
-    },
-  });
-  if (!folder) {
-    return res.status(404).send("Folder not found.");
+  try {
+    const { folderId } = req.params;
+    const folder = await prisma.folder.findFirst({
+      where: {
+        id: parseInt(folderId),
+        userId: req.user.id,
+      },
+    });
+    if (!folder) {
+      return res.status(404).send("Folder not found.");
+    }
+    const { folderName, id } = folder;
+    res.render("renameFolder", {
+      originalName: folderName,
+      folderId: id,
+    });
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
   }
-  const { folderName, id } = folder;
-  res.render("renameFolder", {
-    originalName: folderName,
-    folderId: id,
-  });
 };
 
 exports.postRenameFolder = async (req, res) => {
-  const { folderId } = req.params;
-  const data = req.body;
-  //Folder check
-  const folderCheck = prisma.folder.findFirst({
-    where: {
-      id: parseInt(folderId),
-      userId: req.user.id,
-    },
-  });
-  if (!folderCheck) {
-    return res.status(404).send("Folder not found.");
-  }
+  try {
+    const { folderId } = req.params;
+    const data = req.body;
+    //Folder check
+    const folderCheck = prisma.folder.findFirst({
+      where: {
+        id: parseInt(folderId),
+        userId: req.user.id,
+      },
+    });
+    if (!folderCheck) {
+      return res.status(404).send("Folder not found.");
+    }
 
-  const folder = await prisma.folder.update({
-    where: {
-      id: parseInt(folderId),
-    },
-    data: {
-      folderName: data.folderName,
-    },
-  });
-  if (!folder) {
-    res.send(":(");
-    return;
+    const folder = await prisma.folder.update({
+      where: {
+        id: parseInt(folderId),
+      },
+      data: {
+        folderName: data.folderName,
+      },
+    });
+    if (!folder) {
+      res.send(":(");
+      return;
+    }
+    res.redirect("/viewFiles");
+  } catch (err) {
+    console.error(err);
+    if (err instanceof PrismaClientKnownRequestError) {
+      const errMessage = prismaErrorHandler(err);
+      return res.render("errPage", {
+        errMessage,
+      });
+    }
   }
-  res.redirect("/viewFiles");
 };
