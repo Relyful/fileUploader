@@ -33,5 +33,6 @@ indexRouter.get('/deleteFile/:fileId', authMiddleware, indexController.deleteFil
 indexRouter.get('/deleteFolder/:folderId', authMiddleware, indexController.deleteFolder);
 indexRouter.get('/renameFolder/:folderId', authMiddleware, indexController.getRenameFolder);
 indexRouter.post('/renameFolder/:folderId', authMiddleware, indexController.postRenameFolder);
+indexRouter.get('/failedLogin', (req, res) => res.render('errPage', { errMessage: "Wrong username or password"}));
 
 module.exports = indexRouter;
