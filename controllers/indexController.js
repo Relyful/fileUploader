@@ -1,9 +1,10 @@
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const { PrismaClient } = require("../generated/prisma");
+const { PrismaClient, Prisma } = require("../generated/prisma");
 const passport = require("passport");
 const fs = require("fs");
 const path = require("path");
+const { prismaErrorHandler } = require("./helpers");
 const cloudinary = require("cloudinary").v2;
 
 const prisma = new PrismaClient(); // Prisma uses its own pool internally
@@ -68,12 +69,11 @@ exports.postRegister = [
       console.log(result);
       res.redirect("/login");
     } catch (err) {
-      if (err.code && err.code === "23505") {
-        return res.status(400).render("register", {
-          errors: [{ msg: "Username already exists." }],
-          loggedIn: req.isAuthenticated(),
-          user: req.user,
-        });
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        const errMessage = prismaErrorHandler(err);
+        return res.render('errPage', {
+          errMessage
+        })
       }
       return next(err);
     }
