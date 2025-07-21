@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
   <title>Relyful</title>
 </head>
 <body>
-  <h1>Hello World <% if (locals.user) { %>
-    <%= locals.user.username %>
-  <% } %></h1>
-  <div class="links">
+  <%- include('partials/header') %>
+  <!-- <div class="links">
     <a href="/register">Register</a>
     <a href="/login">Log In</a>
     <a href="/logout">Logout</a>
     <a href="/viewFiles">View Files</a>
     <a href="/upload">Upload</a>
     <a href="/createFolder">Create Folder</a>
-  </div>
+  </div> -->
 </body>
 </html>
