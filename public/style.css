@@ -80,17 +80,57 @@ textarea:not([rows]) {
   --sidePadding: 15%;
 }
 
-header {
+body {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding-left: var(--sidePadding);
   padding-right: var(--sidePadding);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;  
   padding-top: 15px;
   font-size: 1.2em;
 }
 
 header button {
   font-size: 1.7rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.centerDiv {
+  width: 35%;
+  height: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.centerDiv h2 {
+  text-align: center;
+}
+
+.centerButtons {
+  padding-top: 1em;
+  display: flex;
+  gap: 0.5em;
+  flex-direction: column;
+  align-items: center;
+}
+
+.centerButtons button{
+  padding: 0.1em 4em 0.1em 4em;
 }
 
 .links {
@@ -101,12 +141,6 @@ header button {
 
 .links a {
   font-size: 1.2em;
-}
-
-button {
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 
 .fileList li {
