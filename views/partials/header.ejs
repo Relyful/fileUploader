@@ -1,0 +1,16 @@
+<header>
+  <div class="headerLeft">
+    <a href="/">Relystore</a> 
+  </div>
+  <div class="headerRight">    
+    <div class="links">
+      <% if (loggedIn) { %>
+        <div class="user"><%= req.user.username %></div>
+        <a href="/logout"><button type="button">Logout</button></a>
+      <% } else { %>
+        <a href="/register">Register</a>
+        <a href="/login">Log In</a>
+      <% } %>
+    </div>
+  </div>
+</header>
