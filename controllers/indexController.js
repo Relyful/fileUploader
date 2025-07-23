@@ -46,6 +46,7 @@ exports.getIndex = async (req, res) => {
 exports.getRegister = async (req, res) => {
   res.render("register", {
     loggedIn: req.isAuthenticated(),
+    user: req.user,
   });
 };
 
@@ -90,6 +91,7 @@ exports.postRegister = [
 exports.getLogin = async (req, res) => {
   res.render("login", {
     loggedIn: req.isAuthenticated(),
+    user: req.user,
   });
 };
 
@@ -217,6 +219,8 @@ exports.getFileView = async (req, res) => {
     res.render("fileView", {
       files,
       folders,
+      loggedIn: req.isAuthenticated(),
+      user: req.user,
     });
   } catch (err) {
     console.error(err);

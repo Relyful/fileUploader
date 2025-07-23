@@ -143,14 +143,31 @@ header button {
   font-size: 1.2em;
 }
 
-.fileList li {
+.fileList {
+  padding: 2em 5em 2em 5em;
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 0.4em;
 }
 
-.info {
+.fileList li {
   display: flex;
-  gap: 10px;
+  /* gap: 10px; */
+  justify-content: space-between;
+}
+
+.fileList .info {
+  display: flex;
+  justify-content: space-between;
+  gap: 2em;
+}
+
+.fileList .buttons a button{
+  padding: 0.2em 0.7em;
+}
+
+.fileList .info .name {
+  width: 15em;
 }
 
 .registerContent {
@@ -179,4 +196,8 @@ form button {
   flex-grow: 0;
   align-self: center;
   padding: 0.2em 2em 0.2em 2em;
+}
+
+.fileMain {
+  padding-top: 5em;
 }
