@@ -88,7 +88,9 @@ exports.postRegister = [
 ];
 
 exports.getLogin = async (req, res) => {
-  res.render("login");
+  res.render("login", {
+    loggedIn: req.isAuthenticated(),
+  });
 };
 
 exports.postLogin = passport.authenticate("local", {
