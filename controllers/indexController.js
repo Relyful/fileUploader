@@ -44,7 +44,9 @@ exports.getIndex = async (req, res) => {
 };
 
 exports.getRegister = async (req, res) => {
-  res.render("register");
+  res.render("register", {
+    loggedIn: req.isAuthenticated(),
+  });
 };
 
 exports.postRegister = [
