@@ -4,12 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create folder</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <form action="/createFolder" method="post">
-    <label for="folderName">Folder name:  </label>
-    <input type="text" name="folderName" id="folderName">
-    <button type="submit">Create Folder</button>
-  </form>
+  <%- include('partials/header') %>
+  <main class="createMain">
+    <h2 class="createH2">Create folder</h2>
+    <form action="/createFolder" method="post" class="createForm">
+      <div class="formRow">
+        <label for="folderName">Folder name:  </label>
+        <input type="text" name="folderName" id="folderName">
+      </div>
+      <button type="submit">Create Folder</button>
+    </form>
+  </main>
 </body>
 </html>
