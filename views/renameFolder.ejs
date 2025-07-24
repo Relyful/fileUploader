@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
   <title>Rename folder</title>
 </head>
 <body>
-  <h3>Rename folder</h3>
-  <form action="/renameFolder/<%= folderId %>" method="post">
-    <label for="folderName">Folder Name: </label>
-    <input type="text" name="folderName" id="folderName" value=<%= originalName %>>
-    <button type="submit">Rename</button>
-  </form>
+  <%- include('partials/header') %>
+  <main class="createMain">
+    <h2 class="createH2">Rename folder</h2>
+    <form action="/renameFolder/<%= folderId %>" method="post" class="createForm">
+      <div class="formRow">
+        <label for="folderName">Folder Name: </label>
+        <input type="text" name="folderName" id="folderName" value=<%= originalName %>>
+      </div>
+      <button type="submit">Rename</button>
+    </form>
+  </main>
+  <%- include('partials/footer') %>
 </body>
 </html>

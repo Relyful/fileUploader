@@ -119,7 +119,7 @@ exports.getUploadForm = async (req, res) => {
     console.log(folders);
     res.render("uploadForm", {
       folders,
-      loggedIn: req.isAuthenticated,
+      loggedIn: req.isAuthenticated(),
       user: req.user
     });
   } catch (err) {
@@ -260,7 +260,7 @@ exports.getFolderView = async (req, res) => {
     });
     res.render("fileView", {
       files,
-      loggedIn: req.isAuthenticated,
+      loggedIn: req.isAuthenticated(),
       user: req.user,
     });
   } catch (err) {
@@ -351,6 +351,8 @@ exports.getRenameFolder = async (req, res) => {
     res.render("renameFolder", {
       originalName: folderName,
       folderId: id,
+      loggedIn: req.isAuthenticated(),
+      user: req.user,
     });
   } catch (err) {
     console.error(err);
