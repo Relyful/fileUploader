@@ -199,5 +199,13 @@ form button {
 }
 
 .fileMain {
-  padding-top: 5em;
+  padding-top: 2em;
+}
+
+.topButtons {
+  padding-bottom: 3em;
+}
+
+.topButtons button {
+  padding: 0.4em 1em;
 }

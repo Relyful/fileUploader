@@ -9,6 +9,10 @@
 <body>
   <%- include('partials/header') %>
   <main class="fileMain">
+    <div class="topButtons">
+      <a href="/upload"><button type="button">Upload file</button></a>
+      <a href="/createFolder"><button type="button">Create Folder</button></a>
+    </div>
     <h3>My files</h3>
     <% if (locals.files) { %>
     <ul class="fileList">

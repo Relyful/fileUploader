@@ -179,7 +179,10 @@ exports.postUploadForm = [
 ];
 
 exports.getFolderForm = (req, res) => {
-  res.render("folderForm");
+  res.render("folderForm", {
+    loggedIn: req.isAuthenticated(),
+    user: req.user,
+  });
 };
 
 exports.postFolderForm = async (req, res) => {
@@ -255,6 +258,8 @@ exports.getFolderView = async (req, res) => {
     });
     res.render("fileView", {
       files,
+      loggedIn: req.isAuthenticated,
+      user: req.user,
     });
   } catch (err) {
     console.error(err);
