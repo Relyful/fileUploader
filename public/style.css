@@ -209,3 +209,18 @@ form button {
 .topButtons button {
   padding: 0.4em 1em;
 }
+
+.createMain {
+  padding-top: 6em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.createForm { 
+  width: 40em
+}
+
+select {
+  padding: 0 3em;
+}

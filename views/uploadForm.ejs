@@ -4,23 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload file</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <p>Select and upload your file</p>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="myfile" id="myfile">
-    <label for="newFileName">File name: </label>
-    <input type="text" name="newFileName" id="newFileName">
-    <label for="folders">Upload to folder: </label>
-    <select name="folders" id="folders">
-      <option value="undefined" selected>No Folder</option>
-      <% if (locals.folders) { %>
-        <% locals.folders.forEach(folder => { %>
-         <option value=<%= folder.id %>><%= folder.folderName %></option>
-        <% }) %>
-      <% } %>
-    </select>
-    <button type="submit">Upload</button>
+  <%- include('partials/header') %>
+  <main class="createMain">
+    <form action="/upload" method="post" enctype="multipart/form-data" class="createForm">
+      <div class="formRow">
+        <label for="myfile">Select and upload your file</label>
+        <input type="file" name="myfile" id="myfile">
+      </div>
+      <div class="formRow">
+        <label for="newFileName">File name: </label>
+        <input type="text" name="newFileName" id="newFileName">
+      </div>
+      <div class="formRow">
+        <label for="folders">Upload to folder: </label>
+        <select name="folders" id="folders">
+          <option value="undefined" selected>No Folder</option>
+          <% if (locals.folders) { %>
+            <% locals.folders.forEach(folder => { %>
+            <option value=<%= folder.id %>><%= folder.folderName %></option>
+            <% }) %>
+          <% } %>
+        </select>
+      </div>
+      <button type="submit">Upload</button>
   </form>
+  </main>
 </body>
 </html>
