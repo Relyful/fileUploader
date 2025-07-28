@@ -6,8 +6,12 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { PrismaClient } = require("./generated/prisma");
 const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
-// TODO: REMOVE AFTER MAKING SURE PRISMA WAY WORKS
-// const pg = require("pg");
+const fs = require('fs');
+
+const uploadDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const indexRouter = require('./routers/indexRouter');
 
