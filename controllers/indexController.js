@@ -116,7 +116,6 @@ exports.getUploadForm = async (req, res) => {
         userId: req.user.id,
       },
     });
-    console.log(folders);
     res.render("uploadForm", {
       folders,
       loggedIn: req.isAuthenticated(),
@@ -136,8 +135,6 @@ exports.getUploadForm = async (req, res) => {
 exports.postUploadForm = [
   uploadValidation,
   async (req, res, next) => {
-    console.log(req.body);
-    console.log(req.file);
     const data = req.body;
     const filePath = path.join(__dirname, "..", req.file.path);
     let userFileName;
